@@ -18,7 +18,7 @@ export function fail(res, e) {
   const status = e && e.status && e.status >= 400 && e.status < 600 ? e.status : 500;
   const message =
     status === 401 || status === 403
-      ? 'Qloo rejected the API key. Check QLOO_API_KEY on the server.'
+      ? 'Qloo rejected the API key. Check the key and try again.'
       : status === 429
       ? 'Qloo rate limit hit — wait a few seconds and try again.'
       : e?.message || 'Something went wrong.';

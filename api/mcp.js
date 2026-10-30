@@ -1,7 +1,7 @@
 // Stateless MCP server (Streamable HTTP, JSON responses) so ANY agent can use the taste pathfinder.
 // Add to an MCP client as a remote server: https://<your-app>/api/mcp
 import { runPath, resolveText } from '../lib/service.js';
-import { insights } from '../lib/qloo.js';
+import { insights, withRequestKey, mode } from '../lib/qloo.js';
 import { send, readBody } from './_http.js';
 
 export const config = { maxDuration: 60 };
@@ -54,6 +54,7 @@ async function callTool(name, args = {}) {
       city: args.city,
     });
     const slim = {
+      data_mode: mode() === 'demo' ? 'DEMO: illustrative sample graph, not Qloo data' : 'live Qloo',
       headline: r.story.headline,
       path: r.nodes.map((n, i) => ({ step: i, name: n.name, domain: n.domain, role: n.role, why_next: r.story.hops[i]?.text || null, shared_tags_with_next: r.edges[i]?.shared || [] })),
       bridge: r.bridge.name,
@@ -120,11 +121,12 @@ export default async function handler(req, res) {
     return send(res, 400, { jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } });
   }
   if (Array.isArray(body)) {
-    const out = (await Promise.all(body.map(handleMessage))).filter(Boolean);
+    const out = (await withRequestKey(req.headers['x-qloo-key'], () => Promise.all(body.map(handleMessage)))).filter(Boolean);
     if (!out.length) { res.statusCode = 202; return res.end(); }
     return send(res, 200, out);
   }
-  const out = await handleMessage(body);
+  const key = req.headers['x-qloo-key'];
+  const out = await withRequestKey(key, () => handleMessage(body));
   if (!out) { res.statusCode = 202; return res.end(); }
   send(res, 200, out);
 }

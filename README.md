@@ -53,10 +53,15 @@ npm test
 # or: npm run mock  &  QLOO_API_KEY=mock-key QLOO_BASE_URL=http://localhost:4010 npm run dev
 ```
 
+## Live mode vs demo mode
+
+- **Live:** set `QLOO_API_KEY` on the server, **or** click *Use my Qloo key* in the app and paste one. A visitor key is kept in that browser tab only and sent per request in an `x-qloo-key` header. It is never stored or logged. The MCP endpoint accepts the same header.
+- **Demo:** with no key anywhere, the full agent runs on a small hand-built **illustrative** sample graph (`lib/demo-graph.js`, ~80 entities, not Qloo data), so anyone can try the experience end to end. Every demo result is clearly labelled.
+
 ## Deploy (Vercel, ~2 minutes)
 
 1. Import this repo at <https://vercel.com/new> (Framework preset: **Other**, no build command).
-2. Add environment variable `QLOO_API_KEY` (and optionally `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY`).
+2. Add environment variable `QLOO_API_KEY` (optional: without it the app runs in labelled demo mode and visitors can paste their own key) (and optionally `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY`).
 3. Deploy. Static UI is served from `public/`, serverless functions from `api/`.
 
 ## Use it from any agent (MCP)
