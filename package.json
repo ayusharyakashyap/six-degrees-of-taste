@@ -1,0 +1,13 @@
+{
+  "name": "six-degrees-of-taste",
+  "version": "1.0.0",
+  "description": "An agent that finds the cultural path between any two people, powered by Qloo's taste graph.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "mock": "node scripts/mock-qloo.mjs",
+    "test": "node scripts/test.mjs"
+  }
+}
